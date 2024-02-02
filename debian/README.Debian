@@ -1,0 +1,54 @@
+torizon-rac for Debian
+----------------------
+
+Debianized rust packages require the corresponding source code (crates) to be
+Debianized as well. Specially for using the debcargo package which is the
+standard tool. Some of the dependecies for torizon-rac, however, are not
+yet Debianized in any package feed. To list available dependencies, ideally
+from a `torizon/debian:rc` container, for any given architecture, run the
+following script:
+
+rac_dependencies=(
+  async-trait
+  config
+  env_logger
+  log
+  reqwest
+  russh
+  russh-keys
+  serde
+  ssh-key
+  tokio
+  tokio-util
+  uuid
+  color-eyre
+  url
+  chrono
+  portable-pty
+  socket2
+  eyre
+  futures
+  nix
+  tough
+  base64
+  serde_json
+  bytes
+  vergen
+)
+
+for package in "${rac_dependencies[@]}"; do
+    echo "Checking for librust-$package*:"
+    apt search "librust-$package*-dev"
+    echo -e "\n\n"
+done
+
+For this reason, we opted instead to build it with cargo-deb:
+
+apt install cargo
+cargo install cargo-deb
+# apply the patches with quilt or gbp
+quilt push -a # or gbp pq import
+# create the deb in target/debian/ with correct version
+cargo deb --deb-version '0.0~git20231120.ddeb836-1'
+
+ -- Carlos Henrique Lima Melara <carlos.melara@toradex.com>  Fri, 02 Feb 2024 10:24:22 -0300
