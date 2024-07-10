@@ -4,11 +4,14 @@ include /usr/share/dpkg/pkg-info.mk
 
 #export DH_VERBOSE = 1
 export CARGO_HOME = /tmp/
+export RUSTUP_HOME = /tmp/
+export PATH := /tmp/bin:$(PATH)
 
 %:
 	dh $@
 
 override_dh_auto_configure:
+	bash -c "sh <(curl https://sh.rustup.rs -sSf) --no-modify-path -y"
 	# rac's build.rs relies on being in a git repo, so we need to fake it
 	# if it doesn't exist (regular Debian build excludes .git from source)
 	if [ ! -d .git ]; then \
