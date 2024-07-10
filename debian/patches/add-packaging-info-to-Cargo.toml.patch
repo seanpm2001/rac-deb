@@ -12,7 +12,7 @@ index f2c629c..dba431d 100644
 +++ b/Cargo.toml
 @@ -50,3 +50,31 @@ reqwest = { version = "0.11.13", default-features = false, features = ["blocking
  tokio-retry = "0.3.0"
- ring = { version = "0.16.20", features = ["std"] }
+ ring = { version = "0.17", features = ["std"] }
  olpc-cjson = "0.1.3"
 +
 +
