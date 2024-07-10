@@ -1,6 +1,6 @@
 version=4
 opts="mode=git, \
       pgpmode=none, \
-      pretty=0.0~git%cd.%h" \
+      pretty=0.1.0+git%cd.%h" \
   https://github.com/toradex/torizon-rac.git \
   heads/main
