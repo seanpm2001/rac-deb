@@ -1,6 +1,6 @@
 [torizon]
 url = "https://dgw.torizon.io/ras/"
-server_cert_path = "/usr/lib/sota/root.crt"
+server_cert_path = "/etc/sota/root.crt"
 client_cert_path = "/var/sota/import/client.pem"
 client_key_path = "/var/sota/import/pkey.pem"
 
