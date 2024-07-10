@@ -24,4 +24,4 @@ override_dh_auto_build:
 	cargo deb --deb-version $(DEB_VERSION)
 
 override_dh_builddeb:
-	find . -iname torizon-rac*.deb -exec mv -v {} .. \;
+	find . -iname rac*.deb -exec mv -v {} .. \;

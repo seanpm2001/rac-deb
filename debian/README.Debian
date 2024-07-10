@@ -1,11 +1,11 @@
-torizon-rac for Debian
-----------------------
+rac for Debian
+--------------
 
 Debianized rust packages require the corresponding source code (crates) to be
 Debianized as well. Specially for using the debcargo package which is the
-standard tool. Some of the dependecies for torizon-rac, however, are not
-yet Debianized in any package feed. To list available dependencies, ideally
-from a `torizon/debian:rc` container, for any given architecture, run the
+standard tool. Some of the dependecies for rac, however, are not yet Debianized
+in any package feed. To list available dependencies, ideally from a
+`torizon/debian:rc` container, for any given architecture, run the
 following script:
 
 rac_dependencies=(

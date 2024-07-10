@@ -17,7 +17,7 @@ index f2c629c..dba431d 100644
 +
 +
 +[package.metadata.deb]
-+name = "torizon-rac"
++name = "rac"
 +maintainer = "Toradex Packaging Team <debian-pkg-team@toradex.com>"
 +copyright = "Toradex AG"
 +license-file = ["LICENSE", "1"]
