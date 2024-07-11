@@ -1,29 +1,31 @@
 #!/usr/bin/make -f
 
 include /usr/share/dpkg/pkg-info.mk
+include /usr/share/dpkg/architecture.mk
 
 #export DH_VERBOSE = 1
 export CARGO_HOME = /tmp
 export RUSTUP_HOME = /tmp
 export PATH := /tmp/bin:$(PATH)
+export VERGEN_GIT_SEMVER = 0.1.0
+export VERGEN_GIT_SHA_SHORT = $(shell echo $(DEB_VERSION_UPSTREAM) | sed -e "s/.*\.//")
+export VERGEN_BUILD_TIMESTAMP = $(shell date --iso-8601=seconds --utc -d @$(SOURCE_DATE_EPOCH))
+export VERGEN_RUSTC_SEMVER = 1.79.0
+export VERGEN_CARGO_TARGET_TRIPLE = $(DEB_HOST_GNU_CPU)-unknown-$(DEB_HOST_GNU_SYSTEM)
+export VERGEN_CARGO_PROFILE = release
 
 %:
 	dh $@
 
 override_dh_auto_configure:
 	bash -c "sh <(curl https://sh.rustup.rs -sSf) --no-modify-path -y"
-	# rac's build.rs relies on being in a git repo, so we need to fake it
-	# if it doesn't exist (regular Debian build excludes .git from source)
-	if [ ! -d .git ]; then \
-	    git init; \
-	    git config user.name "John Doe"; \
-	    git config user.email "johndow@email.com"; \
-	    git add .; \
-	    git commit -m "initial commit"; \
-	fi
 	cargo install cargo-deb --version 2.0.4
 
 override_dh_auto_build:
+	# disable running the build script, only thing it does is filling the
+	# VERGEN_* variables
+	sed -e 's/"build\.rs"/false/' \
+	    -i `find . -name Cargo.toml`
 	cargo deb --deb-version $(DEB_VERSION)
 
 override_dh_builddeb:
