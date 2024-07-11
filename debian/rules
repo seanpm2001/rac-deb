@@ -3,8 +3,8 @@
 include /usr/share/dpkg/pkg-info.mk
 
 #export DH_VERBOSE = 1
-export CARGO_HOME = /tmp/
-export RUSTUP_HOME = /tmp/
+export CARGO_HOME = /tmp
+export RUSTUP_HOME = /tmp
 export PATH := /tmp/bin:$(PATH)
 
 %:
