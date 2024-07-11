@@ -19,7 +19,7 @@ export VERGEN_CARGO_PROFILE = release
 
 override_dh_auto_configure:
 	bash -c "sh <(curl https://sh.rustup.rs -sSf) --no-modify-path -y"
-	cargo install cargo-deb --version 2.0.4
+	cargo install cargo-deb --version 2.4.0
 
 override_dh_auto_build:
 	# disable running the build script, only thing it does is filling the
