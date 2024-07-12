@@ -38,7 +38,7 @@ index f2c629c..dba431d 100644
 +maintainer-scripts = "debian/"
 +systemd-units = { unit-name = "remote-access" }
 +assets = [
-+    ["target/x86_64-unknown-linux-gnu/release/rac", "usr/bin/", "755"],
++    ["target/release/rac", "usr/bin/", "755"],
 +    ["README.md", "usr/share/doc/rac/README", "644"],
 +    ["debian/client.toml", "etc/rac/", "644"],
 +]
