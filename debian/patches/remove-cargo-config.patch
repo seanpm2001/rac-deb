@@ -1,0 +1,27 @@
+From: Carlos Henrique Lima Melara <carlos.melara@toradex.com>
+Date: Fri, 2 Feb 2024 11:25:57 -0300
+Subject: remove .cargo/config,
+ cargo is smart enough to discover the right one
+
+---
+ .cargo/config | 11 -----------
+ 1 file changed, 11 deletions(-)
+ delete mode 100644 .cargo/config
+
+diff --git a/.cargo/config b/.cargo/config
+deleted file mode 100644
+index 82a7d22..0000000
+--- a/.cargo/config
++++ /dev/null
+@@ -1,11 +0,0 @@
+-[build]
+-target = "x86_64-unknown-linux-musl"
+-
+-[target.aarch64-unknown-linux-musl]
+-linker = "aarch64-linux-musl-gcc"
+-
+-[target.armv7-unknown-linux-musleabihf]
+-linker = "arm-linux-musleabihf-gcc"
+-
+-[target.aarch64-unknown-linux-gnu]
+-linker = "aarch64-linux-gnu-gcc"
