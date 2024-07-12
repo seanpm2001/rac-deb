@@ -1,0 +1,22 @@
+name: Build Debian Package
+
+on: push
+
+jobs:
+  build:
+    permissions:
+      id-token: write
+      contents: read
+      attestations: write
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: ['amd64', 'arm64', 'armhf']
+    uses: torizon/torizon-deb-ci/.github/workflows/toradex-deb-ci.yml@v0
+    with:
+      arch: ${{ matrix.arch }}
+      docker-image: debian:unstable
+      package-name: rac
+      run-attestation: true
+      run-piuparts: false
+      upload-artifacts: true
