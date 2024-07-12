@@ -3,7 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Toradex Packaging Team <debian-pkg-team@toradex.com>
 Rules-Requires-Root: no
-Build-Depends: ca-certificates, curl, debhelper-compat (= 13)
+Build-Depends: ca-certificates, curl, debhelper-compat (= 12)
 Standards-Version: 4.6.2
 Homepage: https://www.github.com/toradex/torizon-rac
 Vcs-Browser: https://www.github.org/torizon/rac-deb
