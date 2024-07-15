@@ -4,19 +4,68 @@ on: push
 
 jobs:
   build:
-    permissions:
-      id-token: write
-      contents: read
-      attestations: write
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        arch: ['amd64', 'arm64', 'armhf']
-    uses: torizon/torizon-deb-ci/.github/workflows/toradex-deb-ci.yml@v0
-    with:
-      arch: ${{ matrix.arch }}
-      docker-image: debian:unstable
-      package-name: rac
-      run-attestation: true
-      run-piuparts: false
-      upload-artifacts: true
+        os: ["ubuntu:20.04", "ubuntu:22.04", "ubuntu:24.04", "debian:stable", "debian:oldstable"]
+        arch: ["amd64"]
+        include:
+          - arch: amd64
+            target: "x86_64-unknown-linux-gnu"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install curl, wget, and node
+        run: |
+          apt-get update
+          apt-get install -y curl wget
+          apt-get install -y nodejs
+          apt-get install -y build-essential
+          apt-get install -y quilt
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          default: true
+
+      - name: Install cargo-deb
+        run: cargo install cargo-deb
+
+      - name: Set environment variables
+        run: |
+          export DATE="$(dpkg-parsechangelog -STimestamp)"
+          echo "BUILD_DATE=$(date --iso-8601=seconds --utc -d @$DATE)" >> $GITHUB_ENV
+          echo "DEB_VERSION=$(dpkg-parsechangelog -SVersion)" >> $GITHUB_ENV
+          echo "RAC_GIT_SHA_SHORT=$(dpkg-parsechangelog -SVersion | sed -e 's/-[^-]*$//' | sed -e 's/.*\.//')" >> $GITHUB_ENV
+          echo "RUSTC_SEMVER=$(rustc --version | cut -f 2 -d ' ')" >> $GITHUB_ENV
+
+      - name: Apply patches
+        run:
+          quilt push -a
+        env:
+          QUILT_PATCHES: debian/patches
+
+      - name: Build Debian package
+        run: |
+          cargo deb --deb-version "$DEB_VERSION" --target ${{ matrix.target }}
+          find . -iname rac*.deb -exec dpkg-deb --info {} \;
+          find . -iname rac*.deb -exec  dpkg-deb --contents {} \;
+        env:
+          VERGEN_GIT_SEMVER: 0.1.0
+          VERGEN_GIT_SHA_SHORT: ${{ env.RAC_GIT_SHA_SHORT }}
+          VERGEN_BUILD_TIMESTAMP: ${{ env.BUILD_DATE }}
+          VERGEN_RUSTC_SEMVER: ${{ env.RUSTC_SEMVER }}
+          VERGEN_CARGO_TARGET_TRIPLE: ${{ matrix.target }}
+          VERGEN_CARGO_PROFILE: release
+
+
+      - name: Upload Debian package
+        uses: actions/upload-artifact@v2
+        with:
+          name: debian-package
+          path: target/**/debian/*.deb
