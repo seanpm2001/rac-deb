@@ -22,10 +22,6 @@ override_dh_auto_configure:
 	cargo install cargo-deb --version 2.4.0
 
 override_dh_auto_build:
-	# disable running the build script, only thing it does is filling the
-	# VERGEN_* variables
-	sed -e 's/"build\.rs"/false/' \
-	    -i `find . -name Cargo.toml`
 	cargo deb --deb-version $(DEB_VERSION)
 
 override_dh_builddeb:
