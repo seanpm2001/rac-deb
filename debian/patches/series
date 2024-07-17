@@ -1,2 +1,3 @@
 remove-cargo-config.patch
+disable-running-the-build-script.patch
 add-packaging-info-to-Cargo.toml.patch

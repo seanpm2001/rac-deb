@@ -1,0 +1,23 @@
+From: Carlos Henrique Lima Melara <carlos.melara@toradex.com>
+Date: Mon, 15 Jul 2024 16:45:37 -0300
+Subject: disable running the build script
+
+The only thing it does is filling the VERGEN_* variables are we are
+taking care of it already
+---
+ Cargo.toml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Cargo.toml b/Cargo.toml
+index d8384fc..e0fb494 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -2,7 +2,7 @@
+ name = "rac"
+ version = "0.1.0"
+ edition = "2021"
+-build = "build.rs"
++build = false
+ homepage = "https://github.com/toradex/torizon-rac"
+ description = "Remote access client for Torizon"
+ repository = "git://github.com/toradex/torizon-rac.git"
