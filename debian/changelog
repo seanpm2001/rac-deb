@@ -2,7 +2,9 @@ rac (0.1.0+git20240702.4a682e1-0+toradex1) unstable; urgency=medium
 
   * Team upload.
   * New upstream version 0.1.0+git20240702.4a682e1
-  * .gh/workflows/deb-builder.yml: add reusable workflow to build package
+  * .gh/workflows/deb-builder.yml: add custom workflow to build package
+      - build native x86_64 packages with cargo-deb
+      - cross-build armhf/arm64 packages with cargo-deb
   * debian/client.toml: load root certificate from /etc as installed in
     aktualizr
   * debian/control:
@@ -16,18 +18,19 @@ rac (0.1.0+git20240702.4a682e1-0+toradex1) unstable; urgency=medium
       - adjust rac binary path
       - install doc in correct path
       - rebase patch
+  * debian/patches/disable-running-the-build-script.patch: add patch.
   * debian/patches/remove-cargo-config.patch: remove .cargo/config entirely.
     Cargo can discover the target by itself.
   * debian/source/options: make dpkg-source ignore our deb-builder workflow
     file
   * debian/rules:
       - bump cargo-deb version to 2.4.0
-      - disable build script and set environment variables
+      - set environment variables for building rac
       - fixup install cargo
       - install cargo with upstream script
   * debian/watch: make 0.1.0 as the default upstream version
 
- -- Carlos Henrique Lima Melara <carlos.melara@toradex.com>  Fri, 12 Jul 2024 10:07:10 -0300
+ -- Carlos Henrique Lima Melara <carlos.melara@toradex.com>  Wed, 17 Jul 2024 16:47:05 -0300
 
 rac (0.0~git20231120.ddeb836-0+toradex1) unstable; urgency=medium
 
