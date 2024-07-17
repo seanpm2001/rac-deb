@@ -5,21 +5,29 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      attestations: write
     container:
       image: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: ["ubuntu:20.04", "ubuntu:22.04", "ubuntu:24.04", "debian:stable", "debian:oldstable"]
-        arch: ["amd64"]
+        arch: ["amd64", "arm64", "armhf"]
         include:
           - arch: amd64
             target: "x86_64-unknown-linux-gnu"
+          - arch: arm64
+            target: "aarch64-unknown-linux-gnu"
+          - arch: armhf
+            target: "armv7-unknown-linux-gnueabihf"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install curl, wget, and node
+      - name: Install build dependencies
         run: |
           apt-get update
           apt-get install -y curl wget
@@ -27,10 +35,17 @@ jobs:
           apt-get install -y build-essential
           apt-get install -y quilt
 
+      - name: Install cross-build dependencies
+        run: |
+          apt-get update
+          apt-get install -y crossbuild-essential-${{ matrix.arch }}
+        if: ${{ matrix.arch != 'amd64'}}
+
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+          target: ${{ matrix.target }}
           default: true
 
       - name: Install cargo-deb
@@ -43,6 +58,9 @@ jobs:
           echo "DEB_VERSION=$(dpkg-parsechangelog -SVersion)" >> $GITHUB_ENV
           echo "RAC_GIT_SHA_SHORT=$(dpkg-parsechangelog -SVersion | sed -e 's/-[^-]*$//' | sed -e 's/.*\.//')" >> $GITHUB_ENV
           echo "RUSTC_SEMVER=$(rustc --version | cut -f 2 -d ' ')" >> $GITHUB_ENV
+          . /etc/os-release
+          echo "DISTRO=$ID" >> $GITHUB_ENV
+          echo "CODENAME=$VERSION_CODENAME" >> $GITHUB_ENV
 
       - name: Apply patches
         run:
@@ -52,10 +70,12 @@ jobs:
 
       - name: Build Debian package
         run: |
-          cargo deb --deb-version "$DEB_VERSION" --target ${{ matrix.target }}
+          cargo deb --deb-version "$DEB_VERSION" --target ${{ matrix.target }} --no-strip
           find . -iname rac*.deb -exec dpkg-deb --info {} \;
           find . -iname rac*.deb -exec  dpkg-deb --contents {} \;
         env:
+          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: /usr/bin/aarch64-linux-gnu-gcc
+          CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_LINKER: /usr/bin/arm-linux-gnueabihf-gcc
           VERGEN_GIT_SEMVER: 0.1.0
           VERGEN_GIT_SHA_SHORT: ${{ env.RAC_GIT_SHA_SHORT }}
           VERGEN_BUILD_TIMESTAMP: ${{ env.BUILD_DATE }}
@@ -63,9 +83,13 @@ jobs:
           VERGEN_CARGO_TARGET_TRIPLE: ${{ matrix.target }}
           VERGEN_CARGO_PROFILE: release
 
+      - name: Attest build artifacts
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: 'target/**/debian/*.deb'
 
       - name: Upload Debian package
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: debian-package
+          name: debian-package-${{ env.DISTRO }}-${{ env.CODENAME }}-${{ matrix.arch }}
           path: target/**/debian/*.deb
