@@ -1,3 +1,10 @@
+rac (0.1.0+git20240702.4a682e1-0+toradex1~deb12u1) bookworm; urgency=medium
+
+  * .gh/workflows/deb-builder.yml: build using debian:bookworm image
+  * debian/gbp.conf: change packaging branch to toradex/bookworm
+
+ -- Carlos Henrique Lima Melara <carlos.melara@toradex.com>  Wed, 17 Jul 2024 17:07:07 -0300
+
 rac (0.1.0+git20240702.4a682e1-0+toradex1) unstable; urgency=medium
 
   * Team upload.
