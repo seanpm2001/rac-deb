@@ -1,3 +1,11 @@
+rac (0.1.0+git20240702.4a682e1-0+toradex1~20.04.1) focal; urgency=medium
+
+  * .gh/workflows/deb-builder.yml: build using ubuntu:focal image
+  * debian/control: depends on debhelper-compat 12 because 13 isn't available
+  * debian/gbp.conf: change packaging branch to toradex/focal
+
+ -- Carlos Henrique Lima Melara <carlos.melara@toradex.com>  Thu, 18 Jul 2024 09:40:26 -0300
+
 rac (0.1.0+git20240702.4a682e1-0+toradex1) unstable; urgency=medium
 
   * Team upload.
