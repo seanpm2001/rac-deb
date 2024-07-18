@@ -1,3 +1,10 @@
+rac (0.1.0+git20240702.4a682e1-0+toradex1~22.04.1) jammy; urgency=medium
+
+  * .gh/workflows/deb-builder.yml: build using ubuntu:jammy image
+  * debian/gbp.conf: change packaging branch to toradex/jammy
+
+ -- Carlos Henrique Lima Melara <carlos.melara@toradex.com>  Thu, 18 Jul 2024 09:24:12 -0300
+
 rac (0.1.0+git20240702.4a682e1-0+toradex1) unstable; urgency=medium
 
   * Team upload.
